@@ -1,0 +1,19 @@
+name: Build SiliconStore
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build IPA
+        run: |
+          xcodebuild -project SiliconOS-3.0-IP.xcodeproj -scheme SiliconOS-3.0-IP -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO -derivedDataPath build
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/*.app Payload/
+          zip -r SiliconStore.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SiliconStore-ipa
+          path: SiliconStore.ipa
