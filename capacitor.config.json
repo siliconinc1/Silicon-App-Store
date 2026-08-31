@@ -1,0 +1,9 @@
+{
+  "appId": "com.silicon.store",
+  "appName": "Silicon App Store",
+  "webDir": "www",
+  "server": {
+    "url": "https://polite-pastelito-e246f2.netlify.app",
+    "cleartext": true
+  }
+}

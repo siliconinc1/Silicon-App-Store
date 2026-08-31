@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Silicon App Store</title>
+<style>
+body{font-family:-apple-system;background:#f5f5f7;margin:0;padding:15px}
+h1{text-align:center}
+#search{width:100%;padding:15px;border-radius:12px;border:none;box-shadow:0 2px 10px rgba(0,0,0,0.1);font-size:16px;margin-bottom:20px}
+.app{background:white;padding:15px;border-radius:15px;margin-bottom:12px;display:flex;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.icon{font-size:40px;width:60px;height:60px;background:#eef2ff;display:flex;align-items:center;justify-content:center;border-radius:12px}
+.stars{color:gold}
+.btn{background:#0A84FF;color:white;border:none;padding:8px 15px;border-radius:20px;margin-top:5px}
+#publish{background:white;padding:15px;border-radius:15px;margin-top:20px}
+input{width:100%;padding:12px;margin:5px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+</style>
+</head>
+<body>
+<h1>🛒 Silicon App Store</h1>
+<input id="search" placeholder="🔍 Suche HTML Apps..." oninput="render()">
+
+<div id="list"></div>
+
+<div id="publish">
+<h3>+ HTML App veröffentlichen</h3>
+<input id="name" placeholder="App Name">
+<input id="url" placeholder="https:// deine html app url">
+<input id="desc" placeholder="Beschreibung">
+<input id="emoji" placeholder="Icon Emoji z.B. 🎮">
+<button class="btn" onclick="publish()">Veröffentlichen</button>
+</div>
+
+<script>
+let apps = JSON.parse(localStorage.getItem('siliconApps')||'null') || [
+ {name:"Silicon Store", url:"https://polite-pastelito-e246f2.netlify.app", desc:"Offizieller Store", icon:"🛒", rating:4.8, count:124},
+ {name:"Flappy HTML", url:"https://flappybird.io", desc:"Flappy Game", icon:"🐦", rating:4.5, count:89},
+ {name:"2048", url:"https://play2048.co", desc:"Puzzle", icon:"🎮", rating:4.9, count:210}
+];
+
+function render(){
+ let q = document.getElementById('search').value.toLowerCase();
+ let html = "";
+ apps.filter(a=>a.name.toLowerCase().includes(q)).forEach((app,i)=>{
+  let stars = "★".repeat(Math.floor(app.rating))+"☆".repeat(5-Math.floor(app.rating));
+  html+=`<div class="app">
+   <div class="icon">${app.icon}</div>
+   <div style="flex:1">
+    <b>${app.name}</b><br><small style="color:gray">${app.desc}</small><br>
+    <span class="stars">${stars}</span> <small>${app.rating} (${app.count})</small><br>
+    <button class="btn" onclick="openApp('${app.url}')">Öffnen</button>
+    <button class="btn" style="background:#eee;color:black" onclick="rate(${i})">⭐ Bewerten</button>
+   </div>
+  </div>`;
+ });
+ document.getElementById('list').innerHTML=html;
+}
+
+function openApp(url){ window.open(url,"_blank"); }
+function rate(i){
+ let r = prompt("1-5 Sterne geben:");
+ if(r){ apps[i].count++; apps[i].rating = ((apps[i].rating*(apps[i].count-1))+parseInt(r))/apps[i].count; save(); }
+}
+function publish(){
+ let n=document.getElementById('name').value;
+ let u=document.getElementById('url').value;
+ if(!n||!u) return alert("Name + URL nötig");
+ apps.unshift({name:n, url:u, desc:document.getElementById('desc').value, icon:document.getElementById('emoji').value||"📱", rating:5, count:1});
+ save();
+}
+function save(){ localStorage.setItem('siliconApps', JSON.stringify(apps)); render(); document.getElementById('name').value=""; document.getElementById('url').value=""; }
+render();
+</script>
+</body>
+</html>

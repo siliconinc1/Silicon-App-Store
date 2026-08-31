@@ -1,0 +1,9 @@
+{
+  "name": "silicon-store",
+  "version": "1.0.0",
+  "dependencies": {
+    "@capacitor/core": "latest",
+    "@capacitor/ios": "latest",
+    "@capacitor/android": "latest"
+  }
+}
